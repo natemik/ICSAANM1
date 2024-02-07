@@ -39,6 +39,6 @@ module ShiftRegister(
 //        end else if (enable) begin
 //            dataOut = dataIn;
 //        end else 
-            dataOut = dataOut;
+            dataOut = dataIn;
     end 
 endmodule
