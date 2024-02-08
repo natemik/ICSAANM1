@@ -21,11 +21,11 @@
 
 
 module digital_top(
-    SRLatchOut,
+    PAD_SRLatchOut,
 
-    controlRegisterDataIn,
-    controlRegisterDataOut,
-    controlRegisterClk,
+    PAD_controlRegisterDataIn,
+    PAD_controlRegisterDataOut,
+    PAD_controlRegisterClk,
     
     CONTROL_SA_RFBS_LF_EN,
     CONTROL_CML_RFBS_LF_EN,
@@ -46,7 +46,7 @@ module digital_top(
     CONTROL_LF_ED_OFF_ON,
     
     // Accumulator inputs/outputs
-    accumulatorReset,
+    PAD_accumulatorReset,
     //accDataIn_InPhase,
     //accDataIn_Quadrature,
     
@@ -57,17 +57,22 @@ module digital_top(
     SA_Data,
     
     accumulatorClk,
-    serialClk,
-    serialStart,
-    serialOut_SA,
-    serialOut_CML
+    PAD_serialClk,
+    PAD_serialStart,
+    PAD_serialOut_SA,
+    PAD_serialOut_CML
     );
     
-    output reg SRLatchOut;
+    reg SRLatchOut;
+    PDO24CDG SRLatchOut_pad(.I(SRLatchOut), .PAD(PAD_SRLatchOut));
+    output PAD_SRLatchOut;
 
-    input controlRegisterDataIn;
-    output controlRegisterDataOut;
-    input controlRegisterClk;
+    PDIDGZ controlRegisterDataIn_pad(.C(controlRegisterDataIn), .PAD(PAD_controlRegisterDataIn));
+    input PAD_controlRegisterDataIn;
+    PDO24CDG controlRegisterDataOut_pad(.I(controlRegisterDataOut), .PAD(PAD_controlRegisterDataOut));
+    output PAD_controlRegisterDataOut;
+    PDIDGZ controlRegisterClk_pad(.C(controlRegisterClk), .PAD(PAD_controlRegisterClk));
+    input PAD_controlRegisterClk;
     // Control Register signals
     output CONTROL_SA_RFBS_LF_EN;
     output CONTROL_CML_RFBS_LF_EN;
@@ -87,9 +92,11 @@ module digital_top(
     output CONTROL_LF_ED_OFF_ON;
     
     // Accumulator inputs
-    input accumulatorReset;
+    PDIDGZ accumulatorReset_pad (.C(accumulatorReset), .PAD(PAD_accumulatorReset));
+    input PAD_accumulatorReset;
 //    input accDataIn_InPhase;
 //    input accDataIn_Quadrature;
+
 
     input SA_InPhase_Data;
     input SA_Quad_Data;
@@ -97,12 +104,17 @@ module digital_top(
     input CML_Quad_Data;
     input SA_Data;
     
-    
     input accumulatorClk;
-    input serialClk;
-    output serialStart;
-    output serialOut_SA;
-    output serialOut_CML;
+    PDIDGZ serialClk_pad(.C(serialClk), .PAD(PAD_serialClk));
+    input PAD_serialClk;
+    PDO24CDG serialStart_pad(.I(serialStart), .PAD(PAD_serialStart));
+    output PAD_serialStart;
+    PDO24CDG serialOut_SA_pad(.I(serialOut_SA), .PAD(PAD_serialOut_SA));
+    output PAD_serialOut_SA;
+    PDO24CDG serialOut_CML_pad(.I(serialOut_CML), .PAD(PAD_serialOut_CML));
+    output PAD_serialOut_CML;
+    
+    
     
     wire [2:0] SR_LATCH_MUX_SEL;
     reg SR_LATCH_MUX_OUT;
