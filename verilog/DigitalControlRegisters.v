@@ -62,9 +62,12 @@ module DigitalControlRegisters(
     LF_SA_RFBS_Q_CLKSEL_PAD_ED,
     LF_SA_RFBS_Q_CLKSEL_OFF_ON,
     
-    LF_COMMON_TAIL_VBIAS_EN,
+    LF_SA_S1_TAIL_VBIAS_EN,
+    LF_CML_S1_TAIL_VBIAS_EN,
     
-    LF_ED_OFF_ON
+    LF_ED_OFF_ON,
+    
+    SAMPLE_CLOCK_POLARITY
     );
     
 //    input enable;
@@ -140,13 +143,19 @@ module DigitalControlRegisters(
     ShiftRegister LF_SA_RFBS_Q_CLKSEL_PAD_ED_SR (.dataIn(LF_SA_RFBS_I_CLKSEL_OFF_ON), .dataOut(LF_SA_RFBS_Q_CLKSEL_PAD_ED), .clk(clk));
     ShiftRegister LF_SA_RFBS_Q_CLKSEL_OFF_ON_SR (.dataIn(LF_SA_RFBS_Q_CLKSEL_PAD_ED), .dataOut(LF_SA_RFBS_Q_CLKSEL_OFF_ON), .clk(clk));
         
-    output LF_COMMON_TAIL_VBIAS_EN;
-    ShiftRegister LF_COMMON_TAIL_VBIAS_EN_SR (.dataIn(LF_SA_RFBS_Q_CLKSEL_OFF_ON), .dataOut(LF_COMMON_TAIL_VBIAS_EN), .clk(clk));
+    output LF_SA_S1_TAIL_VBIAS_EN;
+    output LF_CML_S1_TAIL_VBIAS_EN;
+    ShiftRegister LF_SA_S1_TAIL_VBIAS_EN_SR (.dataIn(LF_SA_RFBS_Q_CLKSEL_OFF_ON), .dataOut(LF_SA_S1_TAIL_VBIAS_EN), .clk(clk));
+    ShiftRegister LF_CML_S1_TAIL_VBIAS_EN_SR (.dataIn(LF_SA_S1_TAIL_VBIAS_EN), .dataOut(LF_CML_S1_TAIL_VBIAS_EN), .clk(clk));
     
     output LF_ED_OFF_ON;
-    ShiftRegister LF_ED_OFF_ON_SR (.dataIn(LF_COMMON_TAIL_VBIAS_EN), .dataOut(LF_ED_OFF_ON), .clk(clk));
+    ShiftRegister LF_ED_OFF_ON_SR (.dataIn(LF_CML_S1_TAIL_VBIAS_EN), .dataOut(LF_ED_OFF_ON), .clk(clk));
     
-    ShiftRegister DUMMY_OUT_SR (.dataIn(LF_ED_OFF_ON), .dataOut(dataOut), .clk(clk));
+    output SAMPLE_CLOCK_POLARITY;
+    ShiftRegister SAMPLE_CLOCK_POLARITY_SR (.dataIn(LF_ED_OFF_ON), .dataOut(SAMPLE_CLOCK_POLARITY), .clk(clk));
+
+    
+    ShiftRegister DUMMY_OUT_SR (.dataIn(SAMPLE_CLOCK_POLARITY), .dataOut(dataOut), .clk(clk));
     
     
     

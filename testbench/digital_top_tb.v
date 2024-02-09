@@ -26,7 +26,7 @@ module digital_top_tb();
     parameter CR_CLK_FREQ = 250e6;
     parameter CR_CLK_HALF_PERIOD = (1.0/(CR_CLK_FREQ) * 1e9)/2;
     
-    reg [38-1:0] testCase;
+    reg [33-1:0] testCase;
     reg controlRegisterReset;
     reg controlRegisterEnable;
     reg controlRegisterDataIn;
@@ -35,12 +35,12 @@ module digital_top_tb();
     integer counter;
     
     initial begin
-        testCase = 31'b0000111111100101001111111111111;
+        testCase = 33'b000011111110010100111111111111111;
         counter = 0;
         controlRegisterClk = 0;
     
         // Toggle the clock 31 times
-        repeat (31) begin
+        repeat (33) begin
           #CR_CLK_HALF_PERIOD; // Wait for the specified half period
           controlRegisterClk = ~controlRegisterClk; // Toggle the clock
           #CR_CLK_HALF_PERIOD; // Wait for the specified half period
@@ -71,7 +71,7 @@ module digital_top_tb();
     wire serialOut_CML;
     parameter DATA_FREQ = 60e3;
     parameter CLK_FREQ = 1e9;
-    parameter SERIAL_CLK_FREQ = 300e6;
+    parameter SERIAL_CLK_FREQ = 600e6;
     parameter DATA_HALF_PERIOD = (1.0/(DATA_FREQ) * 1e9)/2;
     parameter CLK_HALF_PERIOD = (1.0/(CLK_FREQ) * 1e9)/2;
     parameter SERIAL_CLK_HALF_PERIOD = (1.0/(SERIAL_CLK_FREQ) * 1e9)/2;
@@ -118,11 +118,11 @@ module digital_top_tb();
 
     
     digital_top digital_top_0(
-    .SRLatchOut(SRLatchOut),
+    .PAD_SRLatchOut(SRLatchOut),
     
-    .controlRegisterDataIn(controlRegisterDataIn),
-    .controlRegisterDataOut(controlRegisterDataOut),
-    .controlRegisterClk(controlRegisterClk),
+    .PAD_controlRegisterDataIn(controlRegisterDataIn),
+    .PAD_controlRegisterDataOut(controlRegisterDataOut),
+    .PAD_controlRegisterClk(controlRegisterClk),
     
 //    .SA_RFBS_EN(SA_RFBS_EN),
 //    .CML_RFBS_EN(CML_RFBS_EN),
@@ -150,12 +150,13 @@ module digital_top_tb();
     .CONTROL_LF_SA_RFBS_Q_CLKSEL_OFF_ON(LF_SA_RFBS_Q_CLKSEL_OFF_ON),
     
 //    .HF_COMMON_TAIL_VBIAS_EN(),
-    .CONTROL_LF_COMMON_TAIL_VBIAS_EN(LF_COMMON_TAIL_VBIAS_EN),
+    .CONTROL_LF_SA_S1_TAIL_VBIAS_EN(LF_SA_S1_TAIL_VBIAS_EN),
+    .CONTROL_LF_CML_S1_TAIL_VBIAS_EN(LF_CML_S1_TAIL_VBIAS_EN),
     
     .CONTROL_LF_ED_OFF_ON(LF_ED_OFF_ON),
     
     // Accumulator inputs/outputs
-    .accumulatorReset(accumulatorReset),
+//    .PAD_accumulatorReset(accumulatorReset),
 //    .accDataIn_InPhase(accDataIn_InPhase),
 //    .accDataIn_Quadrature(accDataIn_Quadrature),
     .SA_InPhase_Data(SA_InPhase_Data),
@@ -163,10 +164,9 @@ module digital_top_tb();
     .CML_InPhase_Data(CML_InPhase_Data),
     .CML_Quad_Data(CML_Quad_Data),
     .SA_Data(SA_Data),
-    .accumulatorClk(accumulatorClk),
-    .serialClk(serialClk),
-    .serialStart(serialStart),
-    .serialOut_SA(serialOut_SA),
-    .serialOut_CML(serialOut_CML)
+    .PAD_accumulatorClk(accumulatorClk),
+    .PAD_serialClk(serialClk),
+    .PAD_serialStart(serialStart),
+    .PAD_serialOut(serialOut)
     );
 endmodule

@@ -41,12 +41,13 @@ module digital_top(
     CONTROL_LF_SA_RFBS_Q_CLKSEL_PAD_ED,
     CONTROL_LF_SA_RFBS_Q_CLKSEL_OFF_ON,
     
-    CONTROL_LF_COMMON_TAIL_VBIAS_EN,
+    CONTROL_LF_SA_S1_TAIL_VBIAS_EN,
+    CONTROL_LF_CML_S1_TAIL_VBIAS_EN,
     
     CONTROL_LF_ED_OFF_ON,
     
     // Accumulator inputs/outputs
-    PAD_accumulatorReset,
+//    PAD_accumulatorReset,
     //accDataIn_InPhase,
     //accDataIn_Quadrature,
     
@@ -56,11 +57,11 @@ module digital_top(
     CML_Quad_Data,
     SA_Data,
     
-    accumulatorClk,
+    PAD_accumulatorClk,
+    sampleClk,
     PAD_serialClk,
     PAD_serialStart,
-    PAD_serialOut_SA,
-    PAD_serialOut_CML
+    PAD_serialOut
     );
     
     reg SRLatchOut;
@@ -87,13 +88,14 @@ module digital_top(
     output CONTROL_LF_SA_RFBS_Q_CLKSEL_PAD_ED;
     output CONTROL_LF_SA_RFBS_Q_CLKSEL_OFF_ON;
     
-    output CONTROL_LF_COMMON_TAIL_VBIAS_EN;
+    output CONTROL_LF_SA_S1_TAIL_VBIAS_EN;
+    output CONTROL_LF_CML_S1_TAIL_VBIAS_EN;
     
     output CONTROL_LF_ED_OFF_ON;
     
     // Accumulator inputs
-    PDIDGZ accumulatorReset_pad (.C(accumulatorReset), .PAD(PAD_accumulatorReset));
-    input PAD_accumulatorReset;
+//    PDIDGZ accumulatorReset_pad (.C(accumulatorReset), .PAD(PAD_accumulatorReset));
+//    input PAD_accumulatorReset;
 //    input accDataIn_InPhase;
 //    input accDataIn_Quadrature;
 
@@ -104,17 +106,18 @@ module digital_top(
     input CML_Quad_Data;
     input SA_Data;
     
-    input accumulatorClk;
+    PDIDGZ accumulatorClk_pad(.C(accumulatorClk), .PAD(PAD_accumulatorClk));
+    input PAD_accumulatorClk;
+    output sampleClk;
     PDIDGZ serialClk_pad(.C(serialClk), .PAD(PAD_serialClk));
     input PAD_serialClk;
     PDO24CDG serialStart_pad(.I(serialStart), .PAD(PAD_serialStart));
     output PAD_serialStart;
-    PDO24CDG serialOut_SA_pad(.I(serialOut_SA), .PAD(PAD_serialOut_SA));
-    output PAD_serialOut_SA;
-    PDO24CDG serialOut_CML_pad(.I(serialOut_CML), .PAD(PAD_serialOut_CML));
-    output PAD_serialOut_CML;
+    PDO24CDG serialOut_pad(.I(serialOut), .PAD(PAD_serialOut));
+    output PAD_serialOut;
     
-    
+    assign sampleClk = accumulatorClk ^ SAMPLE_CLOCK_POLARITY;
+    assign accumulatorReset = PAD_controlRegisterClk;
     
     wire [2:0] SR_LATCH_MUX_SEL;
     reg SR_LATCH_MUX_OUT;
@@ -129,8 +132,16 @@ module digital_top(
         endcase
     end
     
+    reg SA_InPhase_Data_flopped;
+    reg SA_Quad_Data_flopped;
+    reg CML_InPhase_Data_flopped;
+    reg CML_Quad_Data_flopped;
     always @ (posedge accumulatorClk) begin
         SRLatchOut <= SR_LATCH_MUX_OUT;
+        SA_InPhase_Data_flopped <= SA_InPhase_Data;
+        SA_Quad_Data_flopped <= SA_Quad_Data;
+        CML_InPhase_Data_flopped <= CML_InPhase_Data;
+        CML_Quad_Data_flopped <= CML_Quad_Data;
     end
     
     wire [15:0] DSR;
@@ -170,15 +181,15 @@ module digital_top(
         .LF_SA_RFBS_Q_CLKSEL_PAD_ED(CONTROL_LF_SA_RFBS_Q_CLKSEL_PAD_ED),
         .LF_SA_RFBS_Q_CLKSEL_OFF_ON(CONTROL_LF_SA_RFBS_Q_CLKSEL_OFF_ON),
         
-        .LF_COMMON_TAIL_VBIAS_EN(CONTROL_LF_COMMON_TAIL_VBIAS_EN),
+        .LF_SA_S1_TAIL_VBIAS_EN(CONTROL_LF_SA_S1_TAIL_VBIAS_EN),
+        .LF_CML_S1_TAIL_VBIAS_EN(CONTROL_LF_CML_S1_TAIL_VBIAS_EN),
         
-        .LF_ED_OFF_ON(CONTROL_LF_ED_OFF_ON)
+        .LF_ED_OFF_ON(CONTROL_LF_ED_OFF_ON),
+        
+        .SAMPLE_CLOCK_POLARITY(SAMPLE_CLOCK_POLARITY)
         );
     
     AccumulatorSystem #(.ACC_WIDTH(16))
-        AccumulatorSystem_SA (.inputData_I(SA_InPhase_Data), .inputData_Q(SA_Quad_Data), .clk(accumulatorClk), .serialClk(serialClk), .reset(accumulatorReset), .DSRatio(DSR), .serialStart(serialStart), .serialOut(serialOut_SA));
-
-    AccumulatorSystem #(.ACC_WIDTH(16))
-        AccumulatorSystem_CML (.inputData_I(CML_InPhase_Data), .inputData_Q(CML_Quad_Data), .clk(accumulatorClk), .serialClk(serialClk), .reset(accumulatorReset), .DSRatio(DSR), .serialStart(serialStart), .serialOut(serialOut_CML));
+        AccumulatorSystem (.inputData_SA({SA_InPhase_Data_flopped, SA_Quad_Data_flopped}), .inputData_CML({CML_InPhase_Data_flopped, CML_Quad_Data_flopped}), .clk(accumulatorClk), .serialClk(serialClk), .reset(accumulatorReset), .DSRatio(DSR), .serialStart(serialStart), .serialOut(serialOut));
 
 endmodule

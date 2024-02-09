@@ -20,25 +20,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module SerializationSS
-    #(parameter ACC_DATA_WIDTH = 16)
+    #(parameter ACC_DATA_WIDTH = 32)
     (accumulatorValid,
-     accumulatorData_I,
-     accumulatorData_Q,
+     accumulatorData_SA,
+     accumulatorData_CML,
      serialClk,
      reset,
      serialStart,
      serialOut);
      
      input accumulatorValid;
-     input [ACC_DATA_WIDTH-1:0] accumulatorData_I;
-     input [ACC_DATA_WIDTH-1:0] accumulatorData_Q;
+     input [ACC_DATA_WIDTH-1:0] accumulatorData_SA;
+     input [ACC_DATA_WIDTH-1:0] accumulatorData_CML;
      input serialClk;
      input reset;
      output reg serialStart;
      output reg serialOut;
      
      reg [(ACC_DATA_WIDTH*2)-1:0] serialRegister;
-     reg [5:0] counter;
+     reg [6:0] counter;
      reg inProgress;
      
      always @ (posedge serialClk) begin
@@ -54,7 +54,7 @@ module SerializationSS
             serialOut = 0;
             counter = 0;
             inProgress = 1;
-            serialRegister = {accumulatorData_Q, accumulatorData_I};
+            serialRegister = {accumulatorData_CML, accumulatorData_SA};
         end else if (inProgress && counter == 0) begin
             // Once the register is loaded and is the first data output
             serialStart = 1;

@@ -1,0 +1,30 @@
+(globals
+	version = 3
+	io_order=clockwise
+)
+(iopad
+	(top
+		(inst name="DVDD1" place_status=placed cell="PVDD1DGZ" )
+		(inst name="DVSS1" place_status=placed cell="PVSS1DGZ" )
+		(inst name="VDDPOC" place_status=placed cell="PVDD2POC")
+		(inst name="VSSPCO" place_status=placed cell="PVSS2DGZ" )
+		(inst name="PAD_accumulatorReset" place_status=placed cell="PDIDGZ")
+	)
+
+	(right
+		(inst name="PAD_serialStart" place_status=placed cell="PDO24CDG")		
+		(inst name="PAD_serialOut_SA" place_status=placed cell="PDO24CDG" )
+		(inst name="PAD_serialOut_CML" place_status=placed cell="PDO24CDG" )
+		(inst name="PAD_serialClk" place_status=placed cell="PDO24CDG")		
+		(inst name="PAD_SRLatchOut" place_status=placed cell="PDO24CDG")	
+		(inst name="PAD_controlRegisterDataOut" place_status=placed cell="PDO24CDG")
+	)
+
+	(bottom
+        (inst name="PAD_sampleClockPlaceholder" place_status=placed cell="PDIDGZ")
+		(inst name="PAD_controlRegisterDataIn" place_status=placed cell="PDIDGZ" )
+		(inst name="PAD_controlRegisterClk" place_status=placed cell="PDIDGZ")
+        (inst name="DVDD2" place_status=placed cell="PVDD1DGZ" )
+		(inst name="DVSS2" place_status=placed cell="PVSS1DGZ" )
+	)
+)
