@@ -116,6 +116,7 @@ module digital_top(
     PDO24CDG serialOut_pad(.I(serialOut), .PAD(PAD_serialOut));
     output PAD_serialOut;
     
+    wire SAMPLE_CLOCK_POLARITY;
     assign sampleClk = accumulatorClk ^ SAMPLE_CLOCK_POLARITY;
     assign accumulatorReset = PAD_controlRegisterClk;
     
