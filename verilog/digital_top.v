@@ -27,8 +27,13 @@ module digital_top(
     PAD_controlRegisterDataOut,
     PAD_controlRegisterClk,
     
-    CONTROL_SA_RFBS_LF_EN,
-    CONTROL_CML_RFBS_LF_EN,
+    CONTROL_SA_RFBS_LF_DA_EN_I,
+    CONTROL_SA_RFBS_LF_DA_EN_Q,
+
+    CONTROL_CML_RFBS_LF_DA_EN_I,
+    CONTROL_CML_RFBS_LF_DA_EN_Q,
+    CONTROL_CML_RFBS_LF_CML_EN_I,
+    CONTROL_CML_RFBS_LF_CML_EN_Q,
     
     
     CONTROL_LF_CML_RFBS_I_CLKSEL_PAD_ED,
@@ -75,8 +80,13 @@ module digital_top(
     PDIDGZ controlRegisterClk_pad(.C(controlRegisterClk), .PAD(PAD_controlRegisterClk));
     input PAD_controlRegisterClk;
     // Control Register signals
-    output CONTROL_SA_RFBS_LF_EN;
-    output CONTROL_CML_RFBS_LF_EN;
+    output CONTROL_SA_RFBS_LF_DA_EN_I;
+    output CONTROL_SA_RFBS_LF_DA_EN_Q;
+    
+    output CONTROL_CML_RFBS_LF_DA_EN_I;
+    output CONTROL_CML_RFBS_LF_DA_EN_Q;
+    output CONTROL_CML_RFBS_LF_CML_EN_I;
+    output CONTROL_CML_RFBS_LF_CML_EN_Q;
     
     output CONTROL_LF_CML_RFBS_I_CLKSEL_PAD_ED;
     output CONTROL_LF_CML_RFBS_I_CLKSEL_OFF_ON;
@@ -118,7 +128,7 @@ module digital_top(
     
     wire SAMPLE_CLOCK_POLARITY;
     assign sampleClk = accumulatorClk ^ SAMPLE_CLOCK_POLARITY;
-    assign accumulatorReset = PAD_controlRegisterClk;
+    assign accumulatorReset = controlRegisterClk == 1;
     
     wire [2:0] SR_LATCH_MUX_SEL;
     reg SR_LATCH_MUX_OUT;
@@ -169,8 +179,13 @@ module digital_top(
         .SR_LATCH_MUX_SEL_1(SR_LATCH_MUX_SEL[1]),
         .SR_LATCH_MUX_SEL_0(SR_LATCH_MUX_SEL[0]),
 
-        .SA_RFBS_LF_EN(CONTROL_SA_RFBS_LF_EN),
-        .CML_RFBS_LF_EN(CONTROL_CML_RFBS_LF_EN),
+        .SA_RFBS_LF_DA_EN_I(CONTROL_SA_RFBS_LF_DA_EN_I),
+        .SA_RFBS_LF_DA_EN_Q(CONTROL_SA_RFBS_LF_DA_EN_Q),
+    
+        .CML_RFBS_LF_DA_EN_I(CONTROL_CML_RFBS_LF_DA_EN_I),
+        .CML_RFBS_LF_DA_EN_Q(CONTROL_CML_RFBS_LF_DA_EN_Q),
+        .CML_RFBS_LF_CML_EN_I(CONTROL_CML_RFBS_LF_CML_EN_I),
+        .CML_RFBS_LF_CML_EN_Q(CONTROL_CML_RFBS_LF_CML_EN_Q),
    
         .LF_CML_RFBS_I_CLKSEL_PAD_ED(CONTROL_LF_CML_RFBS_I_CLKSEL_PAD_ED),
         .LF_CML_RFBS_I_CLKSEL_OFF_ON(CONTROL_LF_CML_RFBS_I_CLKSEL_OFF_ON),

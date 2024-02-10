@@ -48,8 +48,13 @@ module DigitalControlRegisters(
     SR_LATCH_MUX_SEL_1,
     SR_LATCH_MUX_SEL_0,
 
-    SA_RFBS_LF_EN,
-    CML_RFBS_LF_EN,
+    SA_RFBS_LF_DA_EN_I,
+    SA_RFBS_LF_DA_EN_Q,
+
+    CML_RFBS_LF_DA_EN_I,
+    CML_RFBS_LF_DA_EN_Q,
+    CML_RFBS_LF_CML_EN_I,
+    CML_RFBS_LF_CML_EN_Q,
     
     
     LF_CML_RFBS_I_CLKSEL_PAD_ED,
@@ -116,20 +121,25 @@ module DigitalControlRegisters(
     ShiftRegister SR_LATCH_MUX_SEL_1_SR (.dataIn(SR_LATCH_MUX_SEL_2), .dataOut(SR_LATCH_MUX_SEL_1), .clk(clk));
     ShiftRegister SR_LATCH_MUX_SEL_0_SR (.dataIn(SR_LATCH_MUX_SEL_1), .dataOut(SR_LATCH_MUX_SEL_0), .clk(clk));
     
-//    output SA_RFBS_EN;
-//    output CML_RFBS_EN;
-    output SA_RFBS_LF_EN;
-    output CML_RFBS_LF_EN;
-//    ShiftRegister SA_RFBS_EN_SR (.dataIn(DSR_0), .dataOut(SA_RFBS_EN), .clk(clk));
-//    ShiftRegister CML_RFBS_EN_SR (.dataIn(SA_RFBS_EN), .dataOut(CML_RFBS_EN), .clk(clk));
-    ShiftRegister SA_RFBS_LF_EN_SR (.dataIn(SR_LATCH_MUX_SEL_0), .dataOut(SA_RFBS_LF_EN), .clk(clk));
-    ShiftRegister CML_RFBS_LF_EN_SR (.dataIn(SA_RFBS_LF_EN), .dataOut(CML_RFBS_LF_EN), .clk(clk));
+    output SA_RFBS_LF_DA_EN_I;
+    output SA_RFBS_LF_DA_EN_Q;
+    ShiftRegister SA_RFBS_LF_DA_EN_I_SR (.dataIn(SR_LATCH_MUX_SEL_0), .dataOut(SA_RFBS_LF_DA_EN_I), .clk(clk));
+    ShiftRegister SA_RFBS_LF_DA_EN_Q_SR (.dataIn(SA_RFBS_LF_DA_EN_I), .dataOut(SA_RFBS_LF_DA_EN_Q), .clk(clk));
+    
+    output CML_RFBS_LF_DA_EN_I;
+    output CML_RFBS_LF_DA_EN_Q;
+    output CML_RFBS_LF_CML_EN_I;
+    output CML_RFBS_LF_CML_EN_Q;
+    ShiftRegister CML_RFBS_LF_DA_EN_I_SR (.dataIn(SA_RFBS_LF_DA_EN_Q), .dataOut(CML_RFBS_LF_DA_EN_I), .clk(clk));
+    ShiftRegister CML_RFBS_LF_DA_EN_Q_SR (.dataIn(CML_RFBS_LF_DA_EN_I), .dataOut(CML_RFBS_LF_DA_EN_Q), .clk(clk));
+    ShiftRegister CML_RFBS_LF_CML_EN_I_SR (.dataIn(CML_RFBS_LF_DA_EN_Q), .dataOut(CML_RFBS_LF_CML_EN_I), .clk(clk));
+    ShiftRegister CML_RFBS_LF_CML_EN_Q_SR (.dataIn(CML_RFBS_LF_CML_EN_I), .dataOut(CML_RFBS_LF_CML_EN_Q), .clk(clk));
     
     output LF_CML_RFBS_I_CLKSEL_PAD_ED;
     output LF_CML_RFBS_I_CLKSEL_OFF_ON;
     output LF_CML_RFBS_Q_CLKSEL_PAD_ED;
     output LF_CML_RFBS_Q_CLKSEL_OFF_ON;
-    ShiftRegister LF_CML_RFBS_I_CLKSEL_PAD_ED_SR (.dataIn(CML_RFBS_LF_EN), .dataOut(LF_CML_RFBS_I_CLKSEL_PAD_ED), .clk(clk));
+    ShiftRegister LF_CML_RFBS_I_CLKSEL_PAD_ED_SR (.dataIn(CML_RFBS_LF_CML_EN_Q), .dataOut(LF_CML_RFBS_I_CLKSEL_PAD_ED), .clk(clk));
     ShiftRegister LF_CML_RFBS_I_CLKSEL_OFF_ON_SR (.dataIn(LF_CML_RFBS_I_CLKSEL_PAD_ED), .dataOut(LF_CML_RFBS_I_CLKSEL_OFF_ON), .clk(clk));
     ShiftRegister LF_CML_RFBS_Q_CLKSEL_PAD_ED_SR (.dataIn(LF_CML_RFBS_I_CLKSEL_OFF_ON), .dataOut(LF_CML_RFBS_Q_CLKSEL_PAD_ED), .clk(clk));
     ShiftRegister LF_CML_RFBS_Q_CLKSEL_OFF_ON_SR (.dataIn(LF_CML_RFBS_Q_CLKSEL_PAD_ED), .dataOut(LF_CML_RFBS_Q_CLKSEL_OFF_ON), .clk(clk));
